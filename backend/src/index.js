@@ -27,6 +27,14 @@ app.use(express.json());
 if (config.isDev) app.use(morgan("dev"));
 
 // ── Routes ───────────────────────────────────────────────────
+app.get("/", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "🏥 MedClinic API Server is running",
+    healthCheck: "/api/health",
+  });
+});
+
 app.use("/api", healthRoutes);   // Public
 app.use("/api", authRoutes);     // Public (login, setup) + authenticated (me)
 app.use("/api", clinicRoutes);   // Authenticated
