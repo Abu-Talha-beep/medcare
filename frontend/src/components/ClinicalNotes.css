@@ -1,0 +1,241 @@
+/* ══════════════════════════════════════════════════════════════
+   Clinical Notes Module
+   ══════════════════════════════════════════════════════════════ */
+
+.cnote-loading {
+  padding: var(--space-8);
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.cnote-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 120;
+  padding: var(--space-4);
+  animation: pageFade 0.2s ease;
+}
+
+.cnote-modal-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  width: 100%;
+  max-width: 620px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cnote-config-card {
+  max-width: 720px;
+}
+
+.cnote-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-4);
+  gap: var(--space-3);
+}
+
+.cnote-modal-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.cnote-modal-sub {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-top: 2px;
+}
+
+.cnote-close-btn {
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cnote-close-btn:hover {
+  color: var(--color-text-primary);
+}
+
+.cnote-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cnote-textarea {
+  font-family: var(--font-family);
+  resize: vertical;
+}
+
+.cnote-tooth-input {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.cnote-field-badge {
+  font-size: 0.75rem;
+  background: rgba(217, 119, 6, 0.12);
+  color: #b45309;
+  padding: 1px 6px;
+  border-radius: var(--radius-sm);
+  margin-left: 6px;
+  font-weight: 600;
+}
+
+.cnote-preset-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: var(--color-bg-input);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.cnote-preset-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.cnote-section-title {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.cnote-fields-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cnote-field-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  gap: var(--space-3);
+}
+
+.cnote-field-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cnote-field-label {
+  font-size: 0.95rem;
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+.cnote-field-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.cnote-type-tag {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.cnote-add-field-form {
+  background: var(--color-bg-input);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cnote-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cnote-history-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  box-shadow: var(--shadow-sm);
+}
+
+.cnote-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-2);
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.cnote-history-date {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.cnote-history-doc {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+}
+
+.cnote-history-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.cnote-history-field {
+  font-size: 0.9rem;
+}
+
+.cnote-history-field-label {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  display: inline-block;
+  min-width: 140px;
+}
+
+.cnote-history-field-val {
+  color: var(--color-text-primary);
+}

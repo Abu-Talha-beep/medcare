@@ -1,0 +1,467 @@
+/* ══════════════════════════════════════════════════════════════
+   Appointments Module
+   ══════════════════════════════════════════════════════════════ */
+
+.appt-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  height: 100%;
+  animation: pageFade 0.35s ease;
+}
+
+.appt-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding-bottom: var(--space-1);
+}
+
+.appt-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.appt-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.appt-tabs {
+  display: flex;
+  background: var(--color-bg-card);
+  padding: 4px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.appt-tab {
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.appt-tab:hover {
+  color: var(--color-text-primary);
+}
+
+.appt-tab--active {
+  background: var(--color-accent);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(15, 118, 110, 0.25);
+}
+
+.appt-filter-select {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  outline: none;
+  min-height: 40px;
+}
+
+.appt-filter-select:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-glow);
+}
+
+.appt-view-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.appt-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.appt-view-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.appt-count-badge {
+  font-size: var(--font-size-xs);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.appt-cal-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--color-bg-card);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.appt-date-picker-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.appt-queue-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.appt-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-4) var(--space-5);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.appt-card:hover {
+  border-color: rgba(15, 118, 110, 0.3);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.appt-queue-num {
+  font-family: var(--font-display);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-accent);
+  min-width: 40px;
+  height: 40px;
+  background: var(--color-accent-mist);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.appt-card-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.appt-patient-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.appt-patient-name {
+  font-size: var(--font-size-base);
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.appt-patient-phone {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+.appt-meta-info {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  flex-wrap: wrap;
+}
+
+.appt-doctor-name {
+  font-weight: 500;
+}
+
+.appt-time {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.appt-notes {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.appt-card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.appt-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.appt-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.appt-status--waiting {
+  background: rgba(217, 119, 6, 0.12);
+  color: #b45309;
+  border: 1px solid rgba(217, 119, 6, 0.22);
+}
+
+.appt-status--progress {
+  background: rgba(2, 132, 199, 0.12);
+  color: #0369a1;
+  border: 1px solid rgba(2, 132, 199, 0.22);
+}
+
+.appt-status--done {
+  background: rgba(5, 150, 105, 0.12);
+  color: #047857;
+  border: 1px solid rgba(5, 150, 105, 0.22);
+}
+
+.appt-status--cancelled,
+.appt-status--noshow {
+  background: rgba(100, 116, 139, 0.12);
+  color: #64748b;
+  border: 1px solid rgba(100, 116, 139, 0.2);
+}
+
+.appt-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.appt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--space-4);
+  animation: pageFade 0.2s ease;
+}
+
+.appt-modal-card {
+  background: var(--color-bg-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  width: 100%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: var(--space-6);
+  box-shadow: var(--shadow-lg);
+}
+
+.appt-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.appt-modal-title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-lg);
+  font-weight: 700;
+}
+
+.appt-modal-close {
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.appt-modal-close:hover {
+  color: var(--color-text-primary);
+}
+
+.appt-modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.appt-type-switcher {
+  display: flex;
+  gap: var(--space-2);
+  background: var(--color-bg-input);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.appt-type-btn {
+  flex: 1;
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.appt-type-btn--active {
+  background: var(--color-accent);
+  color: white;
+  font-weight: 600;
+}
+
+.appt-patient-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--color-bg-input);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.appt-patient-tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.appt-ptab {
+  flex: 1;
+  padding: var(--space-2);
+  font-size: var(--font-size-xs);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-card);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.appt-ptab--active {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  font-weight: 600;
+  background: var(--color-accent-mist);
+}
+
+.appt-selected-patient {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3);
+  background: var(--color-accent-mist);
+  border: 1px solid rgba(15, 118, 110, 0.25);
+  border-radius: var(--radius-md);
+}
+
+.appt-psearch-results {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 160px;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+
+.appt-psearch-item {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-primary);
+  text-align: left;
+}
+
+.appt-psearch-item:hover {
+  border-color: var(--color-accent);
+  background: var(--color-bg-card-hover);
+}
+
+.appt-psearch-name {
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.appt-psearch-phone {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 640px) {
+  .appt-topbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .appt-topbar-right {
+    justify-content: space-between;
+  }
+
+  .appt-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .appt-card-right {
+    width: 100%;
+    align-items: flex-start;
+    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-3);
+    margin-top: var(--space-2);
+  }
+}

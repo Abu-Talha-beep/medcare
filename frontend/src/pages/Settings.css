@@ -1,0 +1,51 @@
+.settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  animation: pageFade 0.35s ease;
+  max-width: 780px;
+}
+
+.settings-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.settings-card h2 {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: var(--space-2);
+}
+
+.settings-hint {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-4);
+}
+
+.settings-profile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.settings-row h2 {
+  margin-bottom: 0.25rem;
+}
+
+.settings-row .settings-hint {
+  margin-bottom: 0;
+}

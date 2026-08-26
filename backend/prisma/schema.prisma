@@ -1,0 +1,250 @@
+// ─── Prisma Schema ── Clinic Management System ──────────────
+// Convention: every business table includes clinic_id, created_at,
+// updated_at, and synced columns.  See /docs/SCHEMA.md for rationale.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Core ────────────────────────────────────────────────────
+
+model Clinic {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
+  city      String   @db.VarChar(255)
+
+  /// JSON blob: enabled modules, custom field definitions, language pref, etc.
+  settings  Json     @default("{}") @db.JsonB
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+  synced    Boolean  @default(true)
+
+  staff                 Staff[]
+  patients              Patient[]
+  appointments          Appointment[]
+  invoices              Invoice[]
+  visitNotes            VisitNote[]
+  inventoryItems        InventoryItem[]
+  inventoryTransactions InventoryTransaction[]
+
+  @@map("clinics")
+}
+
+// ─── Auth ─────────────────────────────────────────────────────
+
+enum StaffRole {
+  admin
+  doctor
+  receptionist
+}
+
+model Staff {
+  id           String        @id @default(uuid()) @db.Uuid
+  clinicId     String        @map("clinic_id") @db.Uuid
+  clinic       Clinic        @relation(fields: [clinicId], references: [id])
+
+  name         String        @db.VarChar(255)
+  phone        String        @db.VarChar(20)
+  role         StaffRole
+  passwordHash String        @map("password_hash")
+
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt      @map("updated_at")
+  synced       Boolean       @default(true)
+
+  appointments Appointment[]
+
+  @@unique([clinicId, phone])
+  @@map("staff")
+}
+
+// ─── Patients ─────────────────────────────────────────────────
+
+enum Gender {
+  male
+  female
+  other
+}
+
+model Patient {
+  id            String        @id @default(uuid()) @db.Uuid
+  clinicId      String        @map("clinic_id") @db.Uuid
+  clinic        Clinic        @relation(fields: [clinicId], references: [id])
+
+  name          String        @db.VarChar(255)
+  phone         String        @db.VarChar(20)
+  cnic          String?       @db.VarChar(15)
+  dateOfBirth   DateTime?     @map("date_of_birth") @db.Date
+  gender        Gender?
+  address       String?       @db.Text
+  familyGroupId String?       @map("family_group_id") @db.Uuid
+
+  /// Clinical chart fields (free-text for v1)
+  allergies           String? @db.Text
+  chronicConditions   String? @map("chronic_conditions") @db.Text
+  currentMedications  String? @map("current_medications") @db.Text
+
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt      @map("updated_at")
+  synced        Boolean       @default(true)
+
+  appointments  Appointment[]
+  invoices      Invoice[]
+
+  @@unique([clinicId, cnic])
+  @@map("patients")
+}
+
+// ─── Appointments ─────────────────────────────────────────────
+
+enum AppointmentStatus {
+  waiting
+  in_progress
+  done
+  cancelled
+  no_show
+}
+
+model Appointment {
+  id          String            @id @default(uuid()) @db.Uuid
+  clinicId    String            @map("clinic_id") @db.Uuid
+  clinic      Clinic            @relation(fields: [clinicId], references: [id])
+
+  patientId   String            @map("patient_id") @db.Uuid
+  patient     Patient           @relation(fields: [patientId], references: [id])
+
+  staffId     String            @map("staff_id") @db.Uuid
+  staff       Staff             @relation(fields: [staffId], references: [id])
+
+  scheduledAt DateTime          @map("scheduled_at")
+  status      AppointmentStatus @default(waiting)
+  notes       String?           @db.VarChar(500)
+
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt      @map("updated_at")
+  synced      Boolean           @default(true)
+
+  invoices    Invoice[]
+  visitNote   VisitNote?
+
+  @@map("appointments")
+}
+
+// ─── Billing ──────────────────────────────────────────────────
+
+enum PaymentMethod {
+  cash
+  jazzcash
+  easypaisa
+  card
+  other
+}
+
+enum PaymentStatus {
+  paid
+  unpaid
+  partially_paid
+}
+
+model Invoice {
+  id            String         @id @default(uuid()) @db.Uuid
+  clinicId      String         @map("clinic_id") @db.Uuid
+  clinic        Clinic         @relation(fields: [clinicId], references: [id])
+
+  appointmentId String?        @map("appointment_id") @db.Uuid
+  appointment   Appointment?   @relation(fields: [appointmentId], references: [id])
+
+  patientId     String         @map("patient_id") @db.Uuid
+  patient       Patient        @relation(fields: [patientId], references: [id])
+
+  amount        Float          @default(0)
+  amountPaid    Float          @default(0) @map("amount_paid")
+  paymentMethod PaymentMethod? @map("payment_method")
+  paymentStatus PaymentStatus  @default(unpaid) @map("payment_status")
+
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt      @map("updated_at")
+  synced        Boolean        @default(true)
+
+  items         InvoiceItem[]
+
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          String   @id @default(uuid()) @db.Uuid
+  invoiceId   String   @map("invoice_id") @db.Uuid
+  invoice     Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  description String   @db.VarChar(255)
+  amount      Float
+
+  @@map("invoice_items")
+}
+
+// ─── Clinical Notes ───────────────────────────────────────────
+
+model VisitNote {
+  id            String      @id @default(uuid()) @db.Uuid
+  clinicId      String      @map("clinic_id") @db.Uuid
+  clinic        Clinic      @relation(fields: [clinicId], references: [id])
+
+  appointmentId String      @unique @map("appointment_id") @db.Uuid
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+
+  templateData  Json        @default("{}") @map("template_data") @db.JsonB
+
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt      @map("updated_at")
+  synced        Boolean     @default(true)
+
+  @@map("visit_notes")
+}
+
+// ─── Inventory ────────────────────────────────────────────────
+
+model InventoryItem {
+  id                String                 @id @default(uuid()) @db.Uuid
+  clinicId          String                 @map("clinic_id") @db.Uuid
+  clinic            Clinic                 @relation(fields: [clinicId], references: [id])
+
+  name              String                 @db.VarChar(255)
+  unit              String                 @default("piece") @db.VarChar(50)
+  stockQty          Int                    @default(0) @map("stock_qty")
+  lowStockThreshold Int                    @default(10) @map("low_stock_threshold")
+
+  createdAt         DateTime               @default(now()) @map("created_at")
+  updatedAt         DateTime               @updatedAt      @map("updated_at")
+  synced            Boolean                @default(true)
+
+  transactions      InventoryTransaction[]
+
+  @@map("inventory_items")
+}
+
+model InventoryTransaction {
+  id        String        @id @default(uuid()) @db.Uuid
+  clinicId  String        @map("clinic_id") @db.Uuid
+  clinic    Clinic        @relation(fields: [clinicId], references: [id])
+
+  itemId    String        @map("item_id") @db.Uuid
+  item      InventoryItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  changeQty Int           @map("change_qty")
+  reason    String?       @db.VarChar(255)
+
+  createdAt DateTime      @default(now()) @map("created_at")
+
+  @@map("inventory_transactions")
+}
+
+
+
+
+
