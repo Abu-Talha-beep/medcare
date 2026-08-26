@@ -21,8 +21,8 @@ const errorHandler = require("./middleware/errorHandler");
 const app = express();
 
 // ── Middleware ────────────────────────────────────────────────
-app.use(helmet());
-app.use(cors({ origin: config.corsOrigin }));
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 if (config.isDev) app.use(morgan("dev"));
 

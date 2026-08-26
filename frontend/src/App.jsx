@@ -161,12 +161,27 @@ export default function App() {
     const token = sessionStorage.getItem("token") || localStorage.getItem("token");
     const savedUserStr = sessionStorage.getItem("user") || localStorage.getItem("user");
 
-    fetch(
-      `${getApiBaseUrl()}/health`
-    )
-      .then((r) => r.json())
-      .then((d) => setApiStatus(d.status === "ok" ? "ok" : "error"))
-      .catch(() => setApiStatus("error"));
+    let timer;
+    const checkHealth = () => {
+      const targetUrl = `${getApiBaseUrl()}/health`;
+      fetch(targetUrl)
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.status === "ok") {
+            setApiStatus("ok");
+          } else {
+            setApiStatus("error");
+            timer = setTimeout(checkHealth, 5000);
+          }
+        })
+        .catch((err) => {
+          console.warn("[MedClinic API Connection]", targetUrl, err);
+          setApiStatus("error");
+          timer = setTimeout(checkHealth, 5000);
+        });
+    };
+
+    checkHealth();
 
     if (token && savedUserStr) {
       api("/auth/me")
@@ -189,6 +204,8 @@ export default function App() {
     } else {
       checkSetupRequired();
     }
+
+    return () => clearTimeout(timer);
   }, [fetchModules, checkSetupRequired]);
 
   const handleLogin = async (e) => {
