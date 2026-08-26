@@ -1,7 +1,14 @@
 // src/api.js — Thin fetch wrapper that auto-attaches the JWT Authorization
 // header and handles 401 → redirect to login.
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+export function getApiBaseUrl() {
+  let url = (import.meta.env.VITE_API_URL || "http://localhost:4000/api").trim();
+  url = url.replace(/\/+$/, "");
+  if (!url.endsWith("/api")) {
+    url += "/api";
+  }
+  return url;
+}
 
 /**
  * Make an API request. Automatically attaches the stored JWT.
@@ -19,7 +26,8 @@ export async function api(path, options = {}) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_URL}${path}`, {
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  const res = await fetch(`${getApiBaseUrl()}${cleanPath}`, {
     ...options,
     headers,
   });
@@ -75,4 +83,3 @@ export function deleteApi(path) {
     method: "DELETE",
   });
 }
-

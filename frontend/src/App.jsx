@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { api, postApi } from "./api";
+import { api, postApi, getApiBaseUrl } from "./api";
 import {
   canAccessPage,
   defaultPageForRole,
@@ -148,7 +148,7 @@ export default function App() {
 
   const checkSetupRequired = useCallback(() => {
     fetch(
-      `${import.meta.env.VITE_API_URL || "http://localhost:4000/api"}/auth/setup-status?clinicId=${DEMO_CLINIC_ID}`
+      `${getApiBaseUrl()}/auth/setup-status?clinicId=${DEMO_CLINIC_ID}`
     )
       .then((r) => r.json())
       .then((data) => {
@@ -162,7 +162,7 @@ export default function App() {
     const savedUserStr = sessionStorage.getItem("user") || localStorage.getItem("user");
 
     fetch(
-      `${import.meta.env.VITE_API_URL || "http://localhost:4000/api"}/health`
+      `${getApiBaseUrl()}/health`
     )
       .then((r) => r.json())
       .then((d) => setApiStatus(d.status === "ok" ? "ok" : "error"))
